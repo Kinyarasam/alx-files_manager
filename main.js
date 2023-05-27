@@ -3,16 +3,16 @@ import redisClient from './utils/redis';
 import dbClient from './utils/db';
 
 /* Redis */
-// (async () => {
-//   console.log(redisClient.isAlive());
-//   console.log(await redisClient.get('myKey'));
-//   await redisClient.set('myKey', 12, 5);
-//   console.log(await redisClient.get('myKey'));
+(async () => {
+  console.log(redisClient.isAlive());
+  console.log(await redisClient.get('myKey'));
+  await redisClient.set('myKey', 12, 5);
+  console.log(await redisClient.get('myKey'));
 
-//   setTimeout(async () => {
-//     console.log(await redisClient.get('myKey'));
-//   }, 1000 * 10);
-// })();
+  setTimeout(async () => {
+    console.log(await redisClient.get('myKey'));
+  }, 1000 * 10);
+})();
 
 /* mongodb */
 const waitConnection = () => {
@@ -22,18 +22,16 @@ const waitConnection = () => {
       await setTimeout(() => {
         i += 1;
         if (i >= 10) {
-          reject()
-        }
-        else if(!dbClient.isAlive()) {
-          repeatFct()
-        }
-        else {
-          resolve()
+          reject();
+        } else if (!dbClient.isAlive()) {
+          repeatFct();
+        } else {
+          resolve();
         }
       }, 1000);
     };
     repeatFct();
-  })
+  });
 };
 
 (async () => {
@@ -42,4 +40,4 @@ const waitConnection = () => {
   console.log(dbClient.isAlive());
   console.log(await dbClient.nbUsers());
   console.log(await dbClient.nbFiles());
-})()
+})();

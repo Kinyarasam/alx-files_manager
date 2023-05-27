@@ -15,7 +15,7 @@ class RedisClient {
 
     // display errors
     this.client.on('error', (error) => {
-      console.log(`Error: ${error.message}`);
+      console.log(`Error: ${error}`);
     });
 
     this.client.on('connect', () => {});

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import Queue from 'bull';
 import sha1 from 'sha1';
+import { ObjectID } from 'mongodb';
 import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 const userQueue = new Queue(
   'userQueue',
@@ -46,19 +48,30 @@ class UsersController {
         userQueue.add({ userId: result.insertedId });
         return res.status(201).json({ id: result.insertedId, email });
       });
+    });
+  }
 
-      // users
-      //   .insertOne(newUser)
-      //   .then((result) => {
-      //     userQueue.add({ userId: result.insertedId });
-      //     return res.status(201).json({
-      //       id: result.insertedId, email,
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
-    // }
+  static async getMe(req, res) {
+    const token = req.header('X-Token');
+    const key = `auth_${token}`;
+    const userId = await redisClient.get(key);
+
+    if (!userId) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    const users = await dbClient.db.collection('users');
+    const idObject = new ObjectID(userId);
+    users.findOne({ _id: idObject }, (err, user) => {
+      if (err) throw err;
+
+      if (!user) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      res.status(201).json({ id: userId, email: user.email });
     });
   }
 }

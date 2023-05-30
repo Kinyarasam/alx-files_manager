@@ -38,6 +38,12 @@ class RedisClient {
     const setKey = util.promisify(this.client.setex).bind(this.client);
     return setKey(key, time, val);
   }
+
+  // del key value pair from redis server.
+  async del(key) {
+    const redisDel = util.promisify(this.client.del).bind(this.client);
+    await redisDel(key);
+  }
 }
 
 const redisClient = new RedisClient();

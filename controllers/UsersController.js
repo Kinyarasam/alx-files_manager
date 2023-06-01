@@ -27,7 +27,7 @@ class UsersController {
 
     const users = dbClient.db.collection('users');
 
-    users.findOne({ email }, (err, user) => {
+    return users.findOne({ email }, (err, user) => {
       if (err) throw err;
 
       if (user) {
@@ -42,7 +42,7 @@ class UsersController {
         password: hashedPassword,
       };
 
-      users.insertOne(newUser, (err, result) => {
+      return users.insertOne(newUser, (err, result) => {
         if (err) throw err;
 
         userQueue.add({ userId: result.insertedId });

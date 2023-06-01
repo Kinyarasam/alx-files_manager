@@ -34,7 +34,7 @@ class AuthController {
       const key = `auth_${token}`;
 
       await redisClient.set(key, user._id.toString(), 60 * 60 * 24);
-      res.status(200).json({ token: token });
+      res.status(200).json({ token });
     });
   }
 
